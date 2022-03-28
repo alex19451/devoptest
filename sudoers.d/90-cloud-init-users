@@ -1,0 +1,4 @@
+# Created by cloud-init v. 21.4-0ubuntu1~20.04.1 on Mon, 28 Mar 2022 16:53:09 +0000
+
+# User rules for alex1945
+alex1945 ALL=(ALL) NOPASSWD:ALL
