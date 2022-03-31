@@ -4,7 +4,7 @@
 # called from dhclient-script, which exports all the variables shown
 # before. If you want to debug a problem with your DHCP setup you can
 # enable this script and take a look at /tmp/dhclient-script.debug.
-
+# Some comment
 # To enable this script set the following variable to "yes"
 RUN="no"
 
