@@ -1,0 +1,73 @@
+---
+
+ - name: install Docker
+   hosts: all
+   become: yes
+   tasks:
+   - name: Install Docker-io
+     apt:
+       name: docker.io
+       state: present
+  
+   - name: Check docker installed
+     service:
+       name: docker
+       state: restarted
+       enabled: true
+###################################
+ - name: Build and push project
+   hosts: build
+   become: yes
+   vars:
+      - packages: openjdk-11-jdk
+      - git_folder: /home/alex1945/repo/
+      - hub_user: 12431551
+      - hub_password: Password
+   tasks: 
+   - name: Install Java
+     apt:
+       name: "{{ packages }}"
+       state: present
+
+   - name: Install maven
+     apt:
+       name: maven
+       state: present
+
+   - name: Install git
+     apt:
+       name: git
+       state: present
+
+   - name: Clone java project from github 
+     git:
+       repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello
+       dest: "{{ git_folder }}"
+       clone: yes
+       update: yes
+
+   - name: Mvn build
+     shell: mvn package
+     args:
+       chdir: /home/alex1945/repo
+  
+   - name: Clone a github repository
+     git:
+       repo: https://github.com/alex19451/devoptest.git
+       dest: "{{ git_folder }}"
+       clone: yes
+       update: yes
+  
+   - name: "Login to Docker Hub"
+     docker_login:
+       username: "{{ hub_user }}"
+       password: "{{ hub_password }}"
+  
+   - name: Push image
+     docker_image:
+       name: "{{ hub_user }}/tomcatweb"
+       tag: 2.0
+       push: yes
+       build:
+         path: "{{ git_folder }}/docker-compose/tomcatweb"
+       source: build
