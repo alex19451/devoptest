@@ -75,8 +75,16 @@
  - name: Run project
    hosts: web
    become: yes
+   vars:
+    - hub_user: 12431551
    tasks:
    - name: Pull image
      docker_image:
-       name: "{{ hub_user }}/tomcatweb"
+       name: "{{ hub_user }}/tomcatweb:4.0"
        source: pull
+   - name: Container present
+     docker_container:
+       name: mycontainer
+       state: present
+       image: "{{ hub_user }}/tomcatweb:4.0"
+       command: sleep infinity
