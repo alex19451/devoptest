@@ -22,7 +22,7 @@
       - packages: openjdk-11-jdk
       - git_folder: /home/alex1945/repo/
       - hub_user: 12431551
-      - hub_password: Alex1393171@
+      - hub_password: Password
    tasks: 
    - name: Install Java
      apt:
