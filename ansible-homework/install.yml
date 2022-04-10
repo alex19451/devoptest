@@ -1,5 +1,4 @@
 ---
-
  - name: install Docker
    hosts: all
    become: yes
@@ -9,12 +8,12 @@
        name: docker.io
        state: present
   
-   - name: Check docker installed
+   - name: Restart docker installed
      service:
        name: docker
        state: restarted
        enabled: true
-###################################
+###########################################################
  - name: Build and push project
    hosts: build
    become: yes
@@ -24,10 +23,16 @@
        name: "{{ packages }}"
        state: present
 
+   - name: Check java is installed
+     shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g' 
+     register: java_result
+     ignore_errors: True
+
    - name: Install maven
      apt:
        name: maven
        state: present
+     when: java_result
 
    - name: Install git
      apt:
@@ -45,6 +50,7 @@
      shell: mvn package
      args:
        chdir: /home/alex1945/repo
+     when: java_result
   
    - name: Clone a github repository
      git:
@@ -66,7 +72,7 @@
        build:
          path: "{{ git_folder }}/ansible-homework/tomcat"
        source: build
-######################################################
+###########################################################
  - name: Run project
    hosts: web
    become: yes
@@ -75,6 +81,7 @@
      docker_image:
        name: "{{ hub_user }}/tomcatweb:{{ version }}"
        source: pull
+       
    - name: Container present
      docker_container:
        name: tomcatweb
