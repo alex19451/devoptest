@@ -1,0 +1,5 @@
+packages: openjdk-11-jdk
+git_folder: /home/alex1945/repo/
+hub_user: 12431551
+hub_password: Password
+version: 4.0

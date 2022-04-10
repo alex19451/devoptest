@@ -18,11 +18,6 @@
  - name: Build and push project
    hosts: build
    become: yes
-   vars:
-      - packages: openjdk-11-jdk
-      - git_folder: /home/alex1945/repo/
-      - hub_user: 12431551
-      - hub_password: pass
    tasks: 
    - name: Install Java
      apt:
@@ -66,7 +61,7 @@
    - name: Push image
      docker_image:
        name: "{{ hub_user }}/tomcatweb"
-       tag: 4.0
+       tag: '{{ version }}'
        push: yes
        build:
          path: "{{ git_folder }}/ansible-homework/tomcat"
@@ -75,12 +70,10 @@
  - name: Run project
    hosts: web
    become: yes
-   vars:
-    - hub_user: 12431551
    tasks:
    - name: Pull image
      docker_image:
-       name: "{{ hub_user }}/tomcatweb:4.0"
+       name: "{{ hub_user }}/tomcatweb:{{ version }}"
        source: pull
    - name: Container present
      docker_container:
@@ -89,4 +82,4 @@
        restart: yes
        ports:
         - "8080:9000"
-       image: "{{ hub_user }}/tomcatweb:4.0"
+       image: "{{ hub_user }}/tomcatweb:{{ version}}"
