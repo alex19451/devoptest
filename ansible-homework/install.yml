@@ -22,7 +22,7 @@
       - packages: openjdk-11-jdk
       - git_folder: /home/alex1945/repo/
       - hub_user: 12431551
-      - hub_password: Password
+      - hub_password: Alex1393171@
    tasks: 
    - name: Install Java
      apt:
@@ -66,8 +66,17 @@
    - name: Push image
      docker_image:
        name: "{{ hub_user }}/tomcatweb"
-       tag: 2.0
+       tag: 4.0
        push: yes
        build:
-         path: "{{ git_folder }}/docker-compose/tomcatweb"
+         path: "{{ git_folder }}/ansible-homework/tomcat"
        source: build
+######################################################
+ - name: Run project
+   hosts: web
+   become: yes
+   tasks:
+   - name: Pull image
+     docker_image:
+       name: "{{ hub_user }}/tomcatweb"
+       source: pull
