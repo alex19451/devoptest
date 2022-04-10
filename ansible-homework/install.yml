@@ -22,7 +22,7 @@
       - packages: openjdk-11-jdk
       - git_folder: /home/alex1945/repo/
       - hub_user: 12431551
-      - hub_password: Password
+      - hub_password: pass
    tasks: 
    - name: Install Java
      apt:
@@ -84,7 +84,9 @@
        source: pull
    - name: Container present
      docker_container:
-       name: mycontainer
-       state: present
+       name: tomcatweb
+       state: started
+       restart: yes
+       ports:
+        - "8080:9000"
        image: "{{ hub_user }}/tomcatweb:4.0"
-       command: sleep infinity
