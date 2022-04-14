@@ -1,0 +1,12 @@
+---
+# tasks file for common
+- name: Install Docker-io
+  apt:
+    name: docker.io
+    state: present
+
+- name: Restart docker installed
+  service:
+    name: docker
+    state: restarted
+    enabled: true

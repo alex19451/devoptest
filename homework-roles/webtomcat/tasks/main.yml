@@ -1,0 +1,15 @@
+---
+# tasks file for webtomcat
+- name: Pull image
+  docker_image:
+    name: "{{ hub_user }}/tomcatweb:{{ version }}"
+    source: pull
+    
+- name: Container present
+  docker_container:
+    name: tomcatweb
+    state: started
+    restart: yes
+    ports:
+     - "8080:9000"
+    image: "{{ hub_user }}/tomcatweb:{{ version}}"

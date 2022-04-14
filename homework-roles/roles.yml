@@ -1,0 +1,18 @@
+---
+- name: Common configuration
+  hosts: all
+  become: yes
+  roles:
+    - common
+
+- name: build server configuration
+  hosts: build
+  become: yes
+  roles:
+    - build
+
+- name: Tomcat web server configuration
+  hosts: web
+  become: yes
+  roles:
+    - webtomcat

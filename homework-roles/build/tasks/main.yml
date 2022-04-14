@@ -1,0 +1,41 @@
+---
+# tasks file for build
+- name: install packages
+  apt: name={{ item }} state=present
+  with_items:
+    - "openjdk-11-jdk"
+    - "maven"
+    - "git"
+
+- name: Clone java project from github 
+  git:
+    repo: "{{ java_project }}"
+    dest: "{{ git_folder }}"
+    clone: yes
+    update: yes
+
+- name: Mvn build
+  shell: mvn package
+  args:
+    chdir: "{{ git_folder  }}"
+
+- name: Clone a github repository
+  git:
+    repo: "{{ my_repo_url }}"
+    dest: "{{ git_folder }}"
+    clone: yes
+    update: yes
+
+- name: "Login to Docker Hub"
+  docker_login:
+    username: "{{ hub_user }}"
+    password: "{{ hub_password }}"
+
+- name: Push image
+  docker_image:
+    name: "{{ hub_user }}/tomcatweb"
+    tag: '{{ version }}'
+    push: yes
+    build:
+      path: "{{ git_folder }}/ansible-homework/tomcat"
+    source: build

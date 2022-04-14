@@ -1,0 +1,8 @@
+---
+# vars file for build
+git_folder: /home/alex1945/repo/
+hub_user: 12431551
+hub_password: password
+version: 5.0
+java_project: https://github.com/boxfuse/boxfuse-sample-java-war-hello
+my_repo_url: https://github.com/alex19451/devoptest.git
