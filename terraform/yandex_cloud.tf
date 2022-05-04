@@ -94,7 +94,7 @@ resource "yandex_compute_instance" "vm-2" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update && sudo apt install -y docker.iot",
+      "sudo apt update && sudo apt install -y docker.io",
       "sudo docker run -p 8088:8080 ${var.user}/myimagenew:${var.vers}",
           ]
     connection {
