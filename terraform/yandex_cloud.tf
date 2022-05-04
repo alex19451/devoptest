@@ -95,7 +95,7 @@ resource "yandex_compute_instance" "vm-2" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt update && sudo apt install -y docker.io",
-      "sudo docker run -p 8088:8080 ${var.user}/myimagenew:${var.vers}",
+      "sudo docker run -d -p 8088:8080 ${var.user}/myimagenew:${var.vers}",
           ]
     connection {
       type     = "ssh"
