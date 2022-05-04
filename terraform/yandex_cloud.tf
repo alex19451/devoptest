@@ -26,10 +26,10 @@ variable "password" {
 variable "vers" {
    description = "registry password docker hub"
    type        = string
-   default     = "2.0"
+   default     = "3.0"
 }
 
-resource "yandex_compute_instance" "vm-1" {
+resource "yandex_compute_instance" "build-node" {
   name = "build-node"
 
   resources {
@@ -56,7 +56,7 @@ resource "yandex_compute_instance" "vm-1" {
     inline = [
       "sudo apt update && sudo apt install -y docker.io git",
       "git clone https://github.com/alex19451/devoptest.git ./app",
-      "cd app/docker-compose/mvnbuild && sudo docker build -t myimagenew:${var.vers} .",
+      "cd app/docker/1 && sudo docker build -t myimagenew:${var.vers} .",
       "sudo docker login -u ${var.user} -p ${var.password}",
       "sudo docker tag myimagenew:${var.vers} ${var.user}/myimagenew:${var.vers} && sudo docker push ${var.user}/myimagenew:${var.vers}"
           ]
@@ -68,7 +68,7 @@ resource "yandex_compute_instance" "vm-1" {
     }
   }
 }
-resource "yandex_compute_instance" "vm-2" {
+resource "yandex_compute_instance" "prod-node" {
   name = "prod-node"
 
   resources {
@@ -95,7 +95,7 @@ resource "yandex_compute_instance" "vm-2" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt update && sudo apt install -y docker.io",
-      "sudo docker run -d -p 8088:8080 ${var.user}/myimagenew:${var.vers}",
+      "sudo docker run -p 8088:8080 ${var.user}/myimagenew:${var.vers}",
           ]
     connection {
       type     = "ssh"
@@ -105,7 +105,7 @@ resource "yandex_compute_instance" "vm-2" {
     }
    }
   depends_on = [
-    yandex_compute_instance.vm-1,
+    yandex_compute_instance.build-node,
   ]
 }
 
@@ -122,18 +122,18 @@ resource "yandex_vpc_subnet" "subnet-1" {
 }
 
 output "internal_ip_address_vm_1" {
-  value = yandex_compute_instance.vm-1.network_interface.0.ip_address
+  value = yandex_compute_instance.build-node.network_interface.0.ip_address
 }
 
 output "internal_ip_address_vm_2" {
-  value = yandex_compute_instance.vm-2.network_interface.0.ip_address
+  value = yandex_compute_instance.prod-node.network_interface.0.ip_address
 }
 
 
 output "external_ip_address_vm_1" {
-  value = yandex_compute_instance.vm-1.network_interface.0.nat_ip_address
+  value = yandex_compute_instance.build-node.network_interface.0.nat_ip_address
 }
 
 output "external_ip_address_vm_2" {
-  value = yandex_compute_instance.vm-2.network_interface.0.nat_ip_address
+  value = yandex_compute_instance.prod-node.network_interface.0.nat_ip_address
 }
